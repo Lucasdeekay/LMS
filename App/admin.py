@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress
+from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress, Comment
+
 
 # Custom User Admin
 class CustomUserAdmin(admin.ModelAdmin):
@@ -49,3 +50,10 @@ class CourseProgressAdmin(admin.ModelAdmin):
     list_filter = ('course',)
 
 admin.site.register(CourseProgress, CourseProgressAdmin)
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'created_at')
+    search_fields = ('name', 'created_at')
+    list_filter = ('created_at',)
+
+admin.site.register(Comment, CommentAdmin)

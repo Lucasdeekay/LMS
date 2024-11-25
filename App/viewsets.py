@@ -1,12 +1,12 @@
 from rest_framework import viewsets
-from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress
+from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress, Comment
 from .serializers import (
     CustomUserSerializer,
     ProfileSerializer,
     CourseSerializer,
     CourseMaterialSerializer,
     CoursePaymentSerializer,
-    CourseProgressSerializer,
+    CourseProgressSerializer, CommentSerializer,
 )
 
 # User ViewSet
@@ -38,3 +38,8 @@ class CoursePaymentViewSet(viewsets.ModelViewSet):
 class CourseProgressViewSet(viewsets.ModelViewSet):
     queryset = CourseProgress.objects.all()
     serializer_class = CourseProgressSerializer
+
+# Comment ViewSet
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer

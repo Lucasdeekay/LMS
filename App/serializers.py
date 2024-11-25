@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress
+from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress, Comment
+
 
 # User Serializer
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -36,3 +37,9 @@ class CourseProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseProgress
         fields = ('id', 'student', 'course', 'progress')
+
+# Comment Serializer
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'name', 'email', 'website', 'message', 'created_at')

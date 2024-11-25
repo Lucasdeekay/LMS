@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 
-from App.models import CustomUser
+from App.models import CustomUser, Course, Comment
 
 
 # Home Page View
@@ -24,6 +24,43 @@ class AboutView(View):
         return render(request, 'app/about.html')
 
 
+class BlogView(View):
+    def get(self, request):
+        return render(request, 'app/blog.html')
+
+
+# About Page View
+class CommunityView(View):
+    def get(self, request):
+        return render(request, 'app/community.html')
+
+# FAQ View
+class FaqsView(View):
+    def get(self, request):
+        return render(request, 'app/faqs.html')
+
+# FAQ View
+class InstructorsView(View):
+    def get(self, request):
+        return render(request, 'app/instructors.html')
+
+
+# Pricing View
+class PricingView(View):
+    def get(self, request):
+        return render(request, 'app/pricing.html')
+
+# Testimonial View
+class TestimonialsView(View):
+    def get(self, request):
+        return render(request, 'app/testimonials.html')
+
+# Services View
+class ServicesView(View):
+    def get(self, request):
+        return render(request, 'app/services.html')
+
+
 # Contact Page View
 class ContactView(View):
     def get(self, request):
@@ -32,15 +69,17 @@ class ContactView(View):
     def post(self, request):
         name = request.POST.get('name')
         email = request.POST.get('email')
-        message = request.POST.get('message')
+        website = request.POST.get('website')
+        message = request.POST.get('comments')
 
         # Add a simple validation check
         if not name or not email or not message:
             messages.error(request, 'All fields are required.')
             return render(request, 'app/contact.html')
 
-        # Implement any additional processing for contact form (e.g., save to DB, send email)
-        # For demonstration, we can display a success message
+        Comment.objects.create(name=name, email=email, webite=website, message=message)
+
+        # we can display a success message
         messages.success(request, 'Thank you for contacting us. We will get back to you soon.')
         return render(request, 'app/contact.html')
 
@@ -50,9 +89,9 @@ class RegistrationView(View):
         return render(request, 'app/register.html')
 
     def post(self, request):
-        username = request.POST['username']
+        username = request.POST['username-reg']
         email = request.POST['email']
-        password = request.POST['password']
+        password = request.POST['password-reg']
         confirm_password = request.POST['confirm_password']
 
         if password != confirm_password:
@@ -185,3 +224,10 @@ class ChangePasswordView(View):
         else:
             messages.error(request, 'Old password is incorrect.')
             return render(request, 'app/change_password.html')
+
+# Course List View
+class CourseListView(View):
+    def get(self, request):
+        # Fetch all available courses
+        courses = Course.objects.all()
+        return render(request, 'app/course_list.html', {'courses': courses})
