@@ -3,14 +3,13 @@ from rest_framework.routers import DefaultRouter
 
 from .views import HomeView, ContactView, RegistrationView, LoginView, LogoutView, AboutView, ForgotPasswordView, \
     PasswordResetView, ChangePasswordView, BlogView, CommunityView, CourseListView, FaqsView, InstructorsView, \
-    PricingView, TestimonialsView, ServicesView
+    PricingView, TestimonialsView, ServicesView, CourseDetailsView
 from .viewsets import (
     CustomUserViewSet,
     ProfileViewSet,
     CourseViewSet,
-    CourseMaterialViewSet,
     CoursePaymentViewSet,
-    CourseProgressViewSet, CommentViewSet,
+    CourseProgressViewSet, CommentViewSet, LessonViewSet,
 )
 
 # Create a router and register our viewsets with it.
@@ -18,7 +17,7 @@ router = DefaultRouter()
 router.register(r'users', CustomUserViewSet)
 router.register(r'profiles', ProfileViewSet)
 router.register(r'courses', CourseViewSet)
-router.register(r'course-materials', CourseMaterialViewSet)
+router.register(r'lessons', LessonViewSet)
 router.register(r'course-payments', CoursePaymentViewSet)
 router.register(r'course-progresses', CourseProgressViewSet)
 router.register(r'comments', CommentViewSet)
@@ -41,6 +40,7 @@ urlpatterns = [
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot_password'),
     path('reset-password/<uidb64>/<token>/', PasswordResetView.as_view(), name='reset_password'),
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
-    path('courses/', CourseListView.as_view(), name='course-list'),
+    path('course-list/', CourseListView.as_view(), name='course_list'),
+    path('courses/<int:course_id>/lessons/', CourseDetailsView.as_view(), name='course_lessons'),
     path('api/', include(router.urls)),
 ]

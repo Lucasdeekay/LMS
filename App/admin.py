@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import CustomUser, Profile, Course, CourseMaterial, CoursePayment, CourseProgress, Comment
+
+from .models import CustomUser, Profile, Course, Lesson, CoursePayment, CourseProgress, Comment
 
 
 # Custom User Admin
@@ -9,14 +10,18 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_filter = ('is_student', 'is_lecturer')
     ordering = ('username',)
 
+
 admin.site.register(CustomUser, CustomUserAdmin)
+
 
 # Profile Admin
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone_number', 'address', 'bio')
     search_fields = ('user__username', 'phone_number', 'address')
 
+
 admin.site.register(Profile, ProfileAdmin)
+
 
 # Course Admin
 class CourseAdmin(admin.ModelAdmin):
@@ -25,15 +30,19 @@ class CourseAdmin(admin.ModelAdmin):
     list_filter = ('lecturer',)
     ordering = ('created_at',)
 
+
 admin.site.register(Course, CourseAdmin)
 
-# Course Material Admin
-class CourseMaterialAdmin(admin.ModelAdmin):
-    list_display = ('course', 'material_type', 'uploaded_at')
-    search_fields = ('course__title', 'material_type')
-    list_filter = ('material_type',)
 
-admin.site.register(CourseMaterial, CourseMaterialAdmin)
+# Course Material Admin
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ('title', 'course', 'duration', 'created_at')
+    list_filter = ('course', 'created_at')
+    search_fields = ('title', 'course__title')
+
+
+admin.site.register(Lesson, LessonAdmin)
+
 
 # Course Payment Admin
 class CoursePaymentAdmin(admin.ModelAdmin):
@@ -41,7 +50,9 @@ class CoursePaymentAdmin(admin.ModelAdmin):
     search_fields = ('student__username', 'course__title', 'payment_status')
     list_filter = ('payment_status', 'payment_date')
 
+
 admin.site.register(CoursePayment, CoursePaymentAdmin)
+
 
 # Course Progress Admin
 class CourseProgressAdmin(admin.ModelAdmin):
@@ -49,11 +60,14 @@ class CourseProgressAdmin(admin.ModelAdmin):
     search_fields = ('student__username', 'course__title')
     list_filter = ('course',)
 
+
 admin.site.register(CourseProgress, CourseProgressAdmin)
+
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'created_at')
     search_fields = ('name', 'created_at')
     list_filter = ('created_at',)
+
 
 admin.site.register(Comment, CommentAdmin)

@@ -1,13 +1,14 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from django.views import View
-from django.urls import reverse_lazy
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views import View
 
 from App.models import CustomUser, Course, Comment
 
@@ -34,10 +35,12 @@ class CommunityView(View):
     def get(self, request):
         return render(request, 'app/community.html')
 
+
 # FAQ View
 class FaqsView(View):
     def get(self, request):
         return render(request, 'app/faqs.html')
+
 
 # FAQ View
 class InstructorsView(View):
@@ -50,10 +53,12 @@ class PricingView(View):
     def get(self, request):
         return render(request, 'app/pricing.html')
 
+
 # Testimonial View
 class TestimonialsView(View):
     def get(self, request):
         return render(request, 'app/testimonials.html')
+
 
 # Services View
 class ServicesView(View):
@@ -82,6 +87,7 @@ class ContactView(View):
         # we can display a success message
         messages.success(request, 'Thank you for contacting us. We will get back to you soon.')
         return render(request, 'app/contact.html')
+
 
 # Custom Registration View
 class RegistrationView(View):
@@ -225,9 +231,28 @@ class ChangePasswordView(View):
             messages.error(request, 'Old password is incorrect.')
             return render(request, 'app/change_password.html')
 
+
 # Course List View
 class CourseListView(View):
     def get(self, request):
         # Fetch all available courses
-        courses = Course.objects.all()
-        return render(request, 'app/course_list.html', {'courses': courses})
+        courses = Course.objects.all()  # Fetch all courses
+        paginator = Paginator(courses, 10)  # Display 10 courses per page
+
+        page_number = request.GET.get('page')  # Get the current page number
+        page_obj = paginator.get_page(page_number)  # Fetch the corresponding page
+        return render(request, 'app/course_list.html', {'page_obj': page_obj})
+
+
+class CourseDetailsView(View):
+    def get(self, request, course_id):
+        # Fetch the course by ID or return a 404 if it doesn't exist
+        course = get_object_or_404(Course, id=course_id)
+
+        # Fetch all lessons associated with the course
+        lessons = course.lessons.all()
+
+        return render(request, 'app/course_lessons.html', {
+            'course': course,
+            'lessons': lessons,
+        })

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 # Custom User model
 class CustomUser(AbstractUser):
     is_student = models.BooleanField(default=False)
@@ -8,6 +9,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
 
 # Profile model for additional user profile information
 class Profile(models.Model):
@@ -20,32 +22,39 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} - Profile"
 
+
 # Course model
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price for the course
-    lecturer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'is_lecturer': True})
+    image = models.ImageField(upload_to='course-images/', verbose_name='Course Image')
+    lecturer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'is_lecturer': True},
+                                 related_name='courses')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Course"
+        verbose_name_plural = "Courses"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title
 
-# Course Material model
-class CourseMaterial(models.Model):
-    MATERIAL_TYPES = [
-        ('video', 'Video'),
-        ('pdf', 'PDF'),
-        ('text', 'Text'),
-    ]
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials')
-    material_type = models.CharField(max_length=10, choices=MATERIAL_TYPES)
-    content = models.FileField(upload_to='course_materials/', blank=True, null=True)
-    text_content = models.TextField(blank=True, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+class Lesson(models.Model):
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='lessons')
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    video = models.FileField(upload_to='lessons/videos/', blank=True, null=True)
+    pdf = models.FileField(upload_to='lessons/pdfs/', blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
+    duration = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.course.title} - {self.material_type}"
+        return f"{self.title} - {self.course.title}"
+
 
 # Course Payment model
 class CoursePayment(models.Model):
@@ -58,6 +67,7 @@ class CoursePayment(models.Model):
     def __str__(self):
         return f"{self.student.username} - {self.course.title} - {self.amount_paid}"
 
+
 # Student Course Progress model
 class CourseProgress(models.Model):
     student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'is_student': True})
@@ -66,6 +76,7 @@ class CourseProgress(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.course.title} - {self.progress}%"
+
 
 # Comment model
 class Comment(models.Model):
