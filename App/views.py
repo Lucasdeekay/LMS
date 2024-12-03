@@ -10,7 +10,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 
-from App.models import CustomUser, Course, Comment
+from App.models import CustomUser, Course, Comment, CoursePayment
 
 
 # Home Page View
@@ -252,7 +252,20 @@ class CourseDetailsView(View):
         # Fetch all lessons associated with the course
         lessons = course.lessons.all()
 
+        student_no = len(CoursePayment.objects.filter(course=course))
+
         return render(request, 'app/course_lessons.html', {
             'course': course,
             'lessons': lessons,
+            'student_no': student_no,
+        })
+
+
+class PaymentDetailsView(View):
+    def get(self, request, course_id):
+        # Fetch the course by ID or return a 404 if it doesn't exist
+        course = get_object_or_404(Course, id=course_id)
+
+        return render(request, 'app/course_payment.html', {
+            'course': course,
         })

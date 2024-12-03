@@ -36,8 +36,8 @@ admin.site.register(Course, CourseAdmin)
 
 # Course Material Admin
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'duration', 'created_at')
-    list_filter = ('course', 'created_at')
+    list_display = ('title', 'course', 'duration', 'is_completed', 'created_at')
+    list_filter = ('course', 'created_at', 'is_completed')
     search_fields = ('title', 'course__title')
 
 

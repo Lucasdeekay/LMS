@@ -49,7 +49,7 @@
                     </div>
                     <hr class="invis clearfix">
                     <p>{{ course.description }}...</p>
-                    <a href="course-single.html" class="btn btn-default btn-sm">Learn More</a>
+                    <a href="{% url 'course_details' course.id %}" class="btn btn-default btn-sm">Learn More</a>
                 </div>
             </div>
         </div>

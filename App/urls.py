@@ -41,6 +41,6 @@ urlpatterns = [
     path('reset-password/<uidb64>/<token>/', PasswordResetView.as_view(), name='reset_password'),
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
     path('course-list/', CourseListView.as_view(), name='course_list'),
-    path('courses/<int:course_id>/lessons/', CourseDetailsView.as_view(), name='course_lessons'),
+    path('courses/<int:course_id>/details/', CourseDetailsView.as_view(), name='course_details'),
     path('api/', include(router.urls)),
 ]
