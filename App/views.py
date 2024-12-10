@@ -254,7 +254,7 @@ class CourseDetailsView(View):
 
         student_no = len(CoursePayment.objects.filter(course=course))
 
-        return render(request, 'app/course_lessons.html', {
+        return render(request, 'app/course_single.html', {
             'course': course,
             'lessons': lessons,
             'student_no': student_no,

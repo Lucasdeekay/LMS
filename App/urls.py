@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import HomeView, ContactView, RegistrationView, LoginView, LogoutView, AboutView, ForgotPasswordView, \
     PasswordResetView, ChangePasswordView, BlogView, CommunityView, CourseListView, FaqsView, InstructorsView, \
-    PricingView, TestimonialsView, ServicesView, CourseDetailsView
+    PricingView, TestimonialsView, ServicesView, CourseDetailsView, PaymentDetailsView
 from .viewsets import (
     CustomUserViewSet,
     ProfileViewSet,
@@ -42,5 +42,6 @@ urlpatterns = [
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
     path('course-list/', CourseListView.as_view(), name='course_list'),
     path('courses/<int:course_id>/details/', CourseDetailsView.as_view(), name='course_details'),
+    path('courses/<int:course_id>/payment/', PaymentDetailsView.as_view(), name='payment'),
     path('api/', include(router.urls)),
 ]
