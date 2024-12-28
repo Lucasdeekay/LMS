@@ -7,7 +7,6 @@ from django.db.models import Q
 from PIL import Image
 
 from course.models import Program
-from .validators import ASCIIUsernameValidator
 
 
 # LEVEL_COURSE = "Level course"
@@ -79,8 +78,6 @@ class User(AbstractUser):
         upload_to="profile_pictures/%y/%m/%d/", default="default.png", null=True
     )
     email = models.EmailField(blank=True, null=True)
-
-    username_validator = ASCIIUsernameValidator()
 
     objects = CustomUserManager()
 

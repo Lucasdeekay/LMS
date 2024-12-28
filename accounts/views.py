@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import get_template, render_to_string
@@ -21,7 +22,7 @@ from accounts.forms import (
 )
 from accounts.models import Parent, Student, User
 from core.models import Semester, Session
-from course.models import Course
+from course.models import Course, Program
 from result.models import TakenCourse
 
 # ########################################################
@@ -54,16 +55,57 @@ def validate_username(request):
 def register(request):
     if request.method == "POST":
         form = StudentAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Account created successfully.")
-            return redirect("login")
-        messages.error(
-            request, "Something is not correct, please fill all fields correctly."
-        )
+        try:
+            with transaction.atomic():
+                first_name = request.POST.get("first_name")
+                last_name = request.POST.get("last_name")
+                gender = request.POST.get("gender")
+                address = request.POST.get("address")
+                phone = request.POST.get("phone")
+                email = request.POST.get("email")
+                level = request.POST.get("level")
+                program = request.POST.get("program")
+                password1 = request.POST.get("password1")
+                password2 = request.POST.get("password2")
+
+                # Validate required fields
+                if not all([first_name, last_name, gender, address, phone, email, level, program, password1, password2]):
+                    messages.error(request, "All fields are required.")
+                    return render(request, "registration/register.html", {'form': form})
+
+                # Check password
+                if password1 != password2:
+                    messages.error(request, "Passwords does not match.")
+                    return render(request, "registration/register.html", {'form': form})
+
+                student_program = Program.objects.get(id=int(program))
+
+                # Create User object
+                user = User.objects.create_user(
+                    username=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    password=password1
+                )
+                user.is_student = True
+                user.save()
+
+                # Create Student object
+                Student.objects.create(
+                    student=user,
+                    level=level,
+                    program=student_program,
+                )
+
+                messages.success(request, "Account created successfully.")
+                return redirect("login")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+            return render(request, "registration/register.html", {'form': form})
     else:
         form = StudentAddForm()
-    return render(request, "registration/register.html", {"form": form})
+        return render(request, "registration/register.html", {'form': form})
 
 
 # ########################################################

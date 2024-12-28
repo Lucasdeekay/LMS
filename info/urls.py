@@ -6,7 +6,7 @@ from .views import HomeView, ContactView, AboutView,  BlogView, CommunityView, C
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
+    path('', HomeView.as_view(), name='default'),
     path('about/', AboutView.as_view(), name='about'),
     path('contact/', ContactView.as_view(), name='contact'),
     path('blog/', BlogView.as_view(), name='blog'),
