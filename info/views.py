@@ -109,8 +109,12 @@ class CourseDetailsView(View):
         # Fetch all lessons associated with the course
         lessons = course.lessons.all()
 
+        # Fetch the last 4 courses
+        course_list = Course.objects.order_by('-id')[:4]
+
         return render(request, 'info/course_single.html', {
             'course': course,
+            'course_list': course_list,
             'lessons': lessons,
             'student_no': 20,
         })

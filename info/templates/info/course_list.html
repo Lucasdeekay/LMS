@@ -36,7 +36,7 @@
             </div>
             <div class="col-md-8 col-md-8">
                 <div class="shop-list-desc">
-                    <h4><a href="course-single.html">{{ course.title }}</a></h4>
+                    <h4><a href="{% url 'course_details' course.id %}">{{ course.title }}</a></h4>
                     <div class="shopmeta">
                         <span class="pull-left"><strong>Course Price:</strong> ${{ course.price }} </span>
                         <div class="rating pull-right">
