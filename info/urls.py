@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import HomeView, ContactView, AboutView,  BlogView, CommunityView, CourseListView, FaqsView, InstructorsView, \
+from .views import HomeView, ContactView, AboutView, CourseListView, FaqsView, InstructorsView, \
     PricingView, TestimonialsView, ServicesView, CourseDetailsView, PaymentDetailsView
 
 
@@ -9,8 +9,6 @@ urlpatterns = [
     path('', HomeView.as_view(), name='default'),
     path('about/', AboutView.as_view(), name='about'),
     path('contact/', ContactView.as_view(), name='contact'),
-    path('blog/', BlogView.as_view(), name='blog'),
-    path('community/', CommunityView.as_view(), name='community'),
     path('faqs/', FaqsView.as_view(), name='faqs'),
     path('instructors/', InstructorsView.as_view(), name='instructors'),
     path('pricing/', PricingView.as_view(), name='pricing'),

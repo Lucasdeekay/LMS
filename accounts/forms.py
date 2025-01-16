@@ -54,7 +54,6 @@ class StaffAddForm(UserCreationForm):
     )
 
     address = forms.CharField(
-        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -65,7 +64,7 @@ class StaffAddForm(UserCreationForm):
     )
 
     phone = forms.CharField(
-        max_length=30,
+        max_length=11,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -76,7 +75,6 @@ class StaffAddForm(UserCreationForm):
     )
 
     email = forms.CharField(
-        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -139,7 +137,6 @@ class StudentAddForm(UserCreationForm):
         required=False,
     )
     address = forms.CharField(
-        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -150,7 +147,7 @@ class StudentAddForm(UserCreationForm):
     )
 
     phone = forms.CharField(
-        max_length=30,
+        max_length=11,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -381,7 +378,6 @@ class ParentAddForm(UserCreationForm):
         label="Username",
     )
     address = forms.CharField(
-        max_length=30,
         widget=forms.TextInput(
             attrs={
                 "type": "text",
@@ -392,7 +388,7 @@ class ParentAddForm(UserCreationForm):
     )
 
     phone = forms.CharField(
-        max_length=30,
+        max_length=11,
         widget=forms.TextInput(
             attrs={
                 "type": "text",

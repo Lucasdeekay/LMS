@@ -72,12 +72,12 @@ class User(AbstractUser):
     is_parent = models.BooleanField(default=False)
     is_dep_head = models.BooleanField(default=False)
     gender = models.CharField(max_length=1, choices=GENDERS, blank=True, null=True)
-    phone = models.CharField(max_length=60, blank=True, null=True)
-    address = models.CharField(max_length=60, blank=True, null=True)
+    phone = models.CharField(max_length=11, blank=True, null=True)
+    address = models.CharField(max_length=500, blank=True, null=True)
     picture = models.ImageField(
         upload_to="profile_pictures/%y/%m/%d/", default="default.png", null=True
     )
-    email = models.EmailField(blank=True, null=True)
+    email = models.EmailField(max_length=250, blank=True, null=True)
 
     objects = CustomUserManager()
 
@@ -184,8 +184,8 @@ class Parent(models.Model):
     student = models.OneToOneField(Student, null=True, on_delete=models.SET_NULL)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=120)
-    phone = models.CharField(max_length=60, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=11, blank=True, null=True)
+    email = models.EmailField(max_length=250, blank=True, null=True)
 
     # What is the relationship between the student and
     # the parent (i.e. father, mother, brother, sister)

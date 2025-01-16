@@ -89,6 +89,7 @@ def register(request):
                     password=password1
                 )
                 user.is_student = True
+                user.is_active = False
                 user.save()
 
                 # Create Student object

@@ -25,17 +25,6 @@ class AboutView(View):
         return render(request, 'info/about.html')
 
 
-class BlogView(View):
-    def get(self, request):
-        return render(request, 'info/blog.html')
-
-
-# About Page View
-class CommunityView(View):
-    def get(self, request):
-        return render(request, 'info/community.html')
-
-
 # FAQ View
 class FaqsView(View):
     def get(self, request):
