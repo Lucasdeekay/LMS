@@ -3,16 +3,22 @@ import uuid
 import json
 
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
+
+from django.contrib import messages
 
 from django.http import JsonResponse
 
 import gopay
 from gopay.enums import Recurrence, PaymentInstrument, BankSwiftCode, Currency, Language
+
+from payments.forms import AmountForm
 from .models import Invoice
+
+from paystackapi.transaction import Transaction
 
 
 def payment_paypal(request):
@@ -188,3 +194,80 @@ def invoice_detail(request, slug):
         "invoice_detail.html",
         context={"invoice": Invoice.objects.get(invoice_code=slug)},
     )
+
+
+"""
+Handle Paystack Redirect After Payment
+Configure Paystack Webhook URL
+
+In your Paystack dashboard, set the callback URL to:
+
+- https://yourdomain.com/paystack/verify/
+
+This ensures Paystack redirects the user after payment.
+"""
+
+
+def payment_paystack(request):
+    if request.method == 'POST':
+        form = AmountForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            reference = str(uuid.uuid4())
+
+            # Initialize transaction with Paystack
+            response = Transaction.initialize(
+                reference=reference,
+                amount=int(amount * 100),  # Convert to kobo
+                email=request.user.email,
+                subaccount="ACCT_xxxxxxxxxxxxxxx",  # Receiver's Paystack subaccount
+                bearer="subaccount"  # Ensures the receiver gets the full amount
+            )
+
+            if response.get('status'):
+                # Store transaction reference in session for later verification
+                request.session["transaction_reference"] = reference
+                request.session["payment_amount"] = float(amount)
+
+                # Redirect to Paystack authorization URL
+                return HttpResponseRedirect(response['data']['authorization_url'])
+            else:
+                messages.error(request, "Transaction initialization failed. Please try again.")
+                return JsonResponse(response, status=400)
+
+    else:
+        form = AmountForm()
+
+    return render(request, "payments/custom_payment.html", {"form": form})
+
+
+def verify_payment(request):
+    reference = request.GET.get("reference")  # Get reference from Paystack callback
+    transaction_reference = request.session.get("transaction_reference")
+    amount = request.session.get("payment_amount")
+
+    if not reference or reference != transaction_reference:
+        messages.error(request, "Invalid transaction reference.")
+        return redirect("payment_failed")
+
+    # Verify transaction with Paystack
+    response = Transaction.verify(reference)
+
+    if response.get("status") and response["data"]["status"] == "success":
+        # Payment successful, save invoice
+        invoice = Invoice.objects.create(
+            user=request.user,
+            amount=amount,
+            total=amount + 26,  # Assuming 26 is a processing fee
+            invoice_code=transaction_reference,
+        )
+        
+        # Cleanup session data
+        del request.session["transaction_reference"]
+        del request.session["payment_amount"]
+
+        messages.success(request, f"Payment of {amount} Naira was successful.")
+        return redirect("payment_success")  # Redirect to a success page
+    else:
+        messages.error(request, "Payment verification failed.")
+        return redirect("payment_failed")

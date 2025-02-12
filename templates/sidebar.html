@@ -106,6 +106,9 @@
 			<li class="{% if request.path == cr %}active{% endif %}">
 				<a href="{% url 'course_registration' %}"><i class="fas fa-plus"></i>{% trans 'Add' %} &amp; {% trans 'Drop Course' %}</a>
 			</li>
+			<li class="{% if request.path == cp %}active{% endif %}">
+				<a href="{% url 'custom_payment' %}"><i class="fa fa-dollar"></i> {% trans 'Make Payment' %}</a>
+			</li>
 			{% endif %}
 			<br />
 			<p class="ms-3 text-secondary">&RightArrow; Others</p>

@@ -13,4 +13,7 @@ urlpatterns = [
     path("complete/", views.paymentComplete, name="complete"),
     path("create-invoice/", views.create_invoice, name="create_invoice"),
     path("invoice-detail/<int:id>/", views.invoice_detail, name="invoice_detail"),
+    # Custom payment
+    path("payment/", views.payment_paystack, name="custom_payment"),
+    path("paystack/verify/", views.verify_payment, name="verify_payment"),
 ]
